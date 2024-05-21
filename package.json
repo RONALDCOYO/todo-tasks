@@ -9,6 +9,9 @@
   "author": "Ronald Cardozo",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "heroku": "^8.11.5",
+    "mongoose": "^6.10.0",
+    "node-env-file": "^0.1.8"
   }
 }
