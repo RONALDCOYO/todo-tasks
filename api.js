@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var express = require("express");
+var TaskModel = require('./task_schema');
 var router = express.Router();
 
 let environment = null;
@@ -19,7 +20,7 @@ environment = {
 
 var query = 'mongodb+srv://' + environment.DBMONGOUSER + ':' + environment.DBMONGOPASS + '@' + environment.DBMONGOSERV + '/' + environment.DBMONGO + '?retryWrites=true&w=majority';
 
-var TaskModel = require('./task_schema');
+
 const db = (query);
 
 mongoose.Promise = global.Promise;
@@ -35,7 +36,7 @@ mongoose.connect(db, {
     }
 });
 
-module.exports = router;
+//Crear tarea 
 
 router.post('/create-task', function (req, res) {
     let task_id = req.body.TaskId;
@@ -59,3 +60,44 @@ router.post('/create-task', function (req, res) {
         }
     });
 });
+
+//Consultar tarea
+
+router.get('/all-tasks', function (req, res) {
+    TaskModel.find(function (err, data) {
+        if (err) {
+            res.status(500).send("Internal error\n");
+        }
+        else {
+            res.status(200).send(data);
+        }
+    });
+});
+
+//Actualizar tarea
+router.post('/update-task', function (req, res) {
+    TaskModel.updateOne({ TaskId: req.body.TaskId }, {
+        Name: req.body.Name,
+        Deadline: req.body.Deadline
+    }, function (err, data) {
+        if (err) {
+            res.status(500).send("Internal error\n");
+        } else {
+            res.status(200).send("OK\n");
+        }
+    });
+});
+
+//Eliminar una tarea
+
+router.delete('/delete-task', function (req, res) {
+    TaskModel.deleteOne({ TaskId: req.body.TaskId }, function (err, data) {
+        if (err) {
+            res.status(500).send("Internal error\n");
+        } else {
+            res.status(200).send("OK\n");
+        }
+    });
+});
+
+module.exports = router;
